@@ -1,0 +1,8 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:converters="clr-namespace:NoteToSelf.Converters">
+    <converters:BoolToVisibilityConverter x:Key="FalseToCollapsedConverter" TrueValue="Visible" FalseValue="Collapsed" />
+    <converters:BoolToVisibilityConverter x:Key="TrueToVisibleConverter" TrueValue="Visible" FalseValue="Collapsed" />
+    <converters:BoolToVisibilityConverter x:Key="TrueToCollapsedConverter" TrueValue="Collapsed" FalseValue="Visible" />
+
+    <converters:StringToVisibilityConverter x:Key="NullToVisibleConverter" TrueValue="Collapsed" FalseValue="Visible" />
+</ResourceDictionary>

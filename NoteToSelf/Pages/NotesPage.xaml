@@ -1,0 +1,125 @@
+﻿<UserControl x:Class="NoteToSelf.Pages.NotesPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:NoteToSelf.Pages" xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             mc:Ignorable="d"
+             xmlns:primitives="clr-namespace:ModernWpf.Controls.Primitives;assembly=ModernWpf"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:mvvmcommand="http://www.galasoft.ch/mvvmlight"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <iconPacks:PackIconMaterialDesign Width="14" Height="14" Kind="Search" Margin="8,0,0,0" Foreground="Black" VerticalAlignment="Center" Grid.Column="0" />
+            <TextBox x:Name="txtSearchBox" primitives:ControlHelper.PlaceholderText="Search for title, description, or tag..." Margin="8,0" BorderBrush="Gray" Grid.Column="1">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="TextChanged">
+                        <mvvmcommand:EventToCommand Command="{Binding SearchTextChangedCommand}" PassEventArgsToCommand="False" CommandParameter="{Binding ElementName=txtSearchBox}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </TextBox>
+        </Grid>
+        <Grid Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="8,8,8,0">
+            <!--<Button Style="{StaticResource AccentButtonStyle}" Margin="8,0,0,0" Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}">
+                <StackPanel Orientation="Horizontal">
+                    <iconPacks:PackIconMaterialDesign Width="14" Height="14" Kind="AddBox" VerticalAlignment="Center" />
+                    <TextBlock Margin="8,0,0,0" Text="Add new Note" Visibility="{Binding Title, Converter={StaticResource NullToVisibleConverter}}" />
+                </StackPanel>
+            </Button>-->
+        </Grid>
+        <ItemsControl ItemsSource="{Binding Notes}" Margin="8" Grid.Row="2">
+            <ItemsControl.Template>
+                <ControlTemplate>
+                    <ScrollViewer Padding="{TemplateBinding Padding}">
+                        <ItemsPresenter />
+                    </ScrollViewer>
+                </ControlTemplate>
+            </ItemsControl.Template>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border CornerRadius="4" Margin="0,2" BorderThickness="1" Background="Transparent" BorderBrush="LightGray" Width="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl}}" Padding="4" Cursor="Hand">
+                        <Border.InputBindings>
+                            <MouseBinding
+                                    MouseAction="LeftClick"
+                                    Command="{Binding DataContext.OpenCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
+                                    CommandParameter="{Binding}" />
+                        </Border.InputBindings>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" MaxHeight="400" />
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="No Title" Foreground="Gray">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Visibility, ElementName=title}" Value="Visible">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                                <TextBlock x:Name="title" Text="{Binding Title}" Visibility="{Binding Title, Converter={StaticResource NullToVisibleConverter}}" />
+                                <StackPanel Orientation="Horizontal" Grid.Column="1" Margin="4,0">
+                                    <iconPacks:PackIconMaterialDesign Width="16" Height="16" Kind="Folder" Foreground="RoyalBlue" ToolTip="Note Category" Cursor="Arrow" VerticalAlignment="Center" Margin="0,0,8,0" Visibility="{Binding IsNoteCategory, Converter={StaticResource TrueToVisibleConverter}}" />
+                                    <Button Style="{StaticResource AccentButtonStyle}" Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <iconPacks:PackIconMaterialDesign Width="12" Height="12" Kind="Edit" VerticalAlignment="Center" />
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Style="{StaticResource AccentButtonStyle}" Margin="8,0,0,0" Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <iconPacks:PackIconMaterialDesign Width="12" Height="12" Kind="Delete" VerticalAlignment="Center" />
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+                            <ItemsControl ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="1" Margin="0,8,0,0" ItemsSource="{Binding Tags}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderThickness="1" CornerRadius="2" Background="#FFDBA6">
+                                            <TextBlock Text="{Binding}" Padding="2,1,2,1" Margin="2,0,2,0" TextTrimming="CharacterEllipsis"
+                                                                                       Foreground="#555555" />
+                                            <!--<Setter Property="Background" Value="#ECECF2" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding HasBackground}" Value="False">
+                                                        <Setter Property="Background" Value="Transparent" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                        <Setter Property="Background" Value="#FFDBA6" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>-->
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <TextBlock Text="{Binding Description}" Margin="0,14,0,0" Grid.Row="2" TextWrapping="WrapWithOverflow" MaxHeight="200" />
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </Grid>
+</UserControl>

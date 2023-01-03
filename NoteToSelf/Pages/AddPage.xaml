@@ -1,0 +1,45 @@
+﻿<UserControl x:Class="NoteToSelf.Pages.AddPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:primitives="clr-namespace:ModernWpf.Controls.Primitives;assembly=ModernWpf" xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             mc:Ignorable="d"
+             Margin="12"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.InputBindings>
+        <KeyBinding Key="S" Modifiers="Ctrl" Command="{Binding SaveCommand}" />
+    </UserControl.InputBindings>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <TextBox IsReadOnly="{Binding IsReadOnly}" Grid.Row="0" primitives:ControlHelper.PlaceholderText="Title..." Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBox IsReadOnly="{Binding IsReadOnly}" Grid.Row="1" primitives:ControlHelper.PlaceholderText="Tags separated by comma e.g: Work, NSFW, Fidesz" Text="{Binding Tags, UpdateSourceTrigger=PropertyChanged}" Margin="0,12,0,0" />
+            <TextBox IsReadOnly="{Binding IsReadOnly}" Grid.Row="2" primitives:ControlHelper.PlaceholderText="Content..." Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" TextWrapping="WrapWithOverflow" Margin="0,12,0,0" AcceptsReturn="True" />
+        </Grid>
+        <StackPanel Orientation="Horizontal" Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,12,0,0">
+            <Button Style="{StaticResource AccentButtonStyle}" MinWidth="140" Command="{Binding CancelCommand}">Cancel</Button>
+            <Button Margin="8,0,0,0" Style="{StaticResource AccentButtonStyle}" MinWidth="140" Command="{Binding SaveCommand}" Visibility="{Binding IsReadOnly, Converter={StaticResource TrueToCollapsedConverter}}">Save and Close</Button>
+        </StackPanel>
+        <Button MinWidth="140" Command="{Binding SwitchNoteCategoryCommand}" Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="0,12,0,0">
+            <Button.Style>
+                <Style TargetType="Button" BasedOn="{StaticResource AccentButtonStyle}">
+                    <Setter Property="Content" Value="Promote to Note Category" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsNoteCategory}" Value="True">
+                            <Setter Property="Content" Value="Demote Note Category" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+    </Grid>
+</UserControl>
